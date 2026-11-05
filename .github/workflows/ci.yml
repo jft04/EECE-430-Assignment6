@@ -37,10 +37,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/jft04/eece-430-assignment6:latest .
+        run: docker build -t ghcr.io/jft04/inventory-app:latest .
 
       - name: Push Docker image
-        run: docker push ghcr.io/jft04/eece-430-assignment6:latest
+        run: docker push ghcr.io/jft04/inventory-app:latest
 
   deploy:
     needs: test
@@ -66,12 +66,12 @@ jobs:
       - name: Pull image on Windows
         if: runner.os == 'Windows'
         shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
-        run: docker pull --platform linux/amd64 ghcr.io/jft04/eece-430-assignment6:latest
+        run: docker pull --platform linux/amd64 ghcr.io/jft04/inventory-app:latest
 
       - name: Pull image on macOS
         if: runner.os == 'macOS'
         shell: bash
-        run: docker pull --platform linux/amd64 ghcr.io/jft04/eece-430-assignment6:latest
+        run: docker pull --platform linux/amd64 ghcr.io/jft04/inventory-app:latest
 
       - name: Deploy on Windows
         if: runner.os == 'Windows'
@@ -87,7 +87,7 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
 
-          docker run -d --platform linux/amd64 --name inventory-app -p 127.0.0.1:8000:8000 -e GEMINI_API_KEY=$env:GEMINI_API_KEY ghcr.io/jft04/eece-430-assignment6:latest
+          docker run -d --platform linux/amd64 --name inventory-app -p 127.0.0.1:8000:8000 -e GEMINI_API_KEY=$env:GEMINI_API_KEY ghcr.io/jft04/inventory-app:latest
           exit $LASTEXITCODE
 
       - name: Deploy on macOS
@@ -101,4 +101,4 @@ jobs:
             docker rm -f inventory-app
           fi
 
-          docker run -d --platform linux/amd64 --name inventory-app -p 127.0.0.1:8000:8000 -e GEMINI_API_KEY="$GEMINI_API_KEY" ghcr.io/jft04/eece-430-assignment6:latest
+          docker run -d --platform linux/amd64 --name inventory-app -p 127.0.0.1:8000:8000 -e GEMINI_API_KEY="$GEMINI_API_KEY" ghcr.io/jft04/inventory-app:latest
