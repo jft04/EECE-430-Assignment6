@@ -38,3 +38,17 @@ jobs:
 
       - name: Push Docker image
         run: docker push ghcr.io/jft04/eece-430-assignment6:latest
+
+  deploy:
+    needs: test
+    runs-on: [self-hosted, "AI Agent-deploy"]
+    steps:
+      - name: Check Docker on Windows
+        if: runner.os == 'Windows'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
+        run: docker info
+
+      - name: Check Docker on macOS
+        if: runner.os == 'macOS'
+        shell: bash
+        run: docker info
