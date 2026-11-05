@@ -42,6 +42,9 @@ jobs:
   deploy:
     needs: test
     runs-on: [self-hosted, "AI Agent-deploy"]
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Check Docker on Windows
         if: runner.os == 'Windows'
@@ -52,3 +55,20 @@ jobs:
         if: runner.os == 'macOS'
         shell: bash
         run: docker info
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull image on Windows
+        if: runner.os == 'Windows'
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
+        run: docker pull --platform linux/amd64 ghcr.io/jft04/eece-430-assignment6:latest
+
+      - name: Pull image on macOS
+        if: runner.os == 'macOS'
+        shell: bash
+        run: docker pull --platform linux/amd64 ghcr.io/jft04/eece-430-assignment6:latest
